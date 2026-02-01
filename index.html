@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auditoria Verde</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+      background: linear-gradient(-45deg, #0f172a, #1e3a8a, #22c55e, #38bdf8);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    @keyframes gradientBG {
+      0% {background-position:0% 50%;}
+      50% {background-position:100% 50%;}
+      100% {background-position:0% 50%;}
+    }
+    .box {
+      background: rgba(30, 41, 59, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+      border: 2px solid #22c55e;
+      color: white;
+    }
+    h1 {
+      color: #22c55e;
+      margin-bottom: 15px;
+      font-size: 2rem;
+      text-shadow: 2px 2px 4px #000000;
+    }
+    p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+    input, select {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+    button {
+      background: #22c55e;
+      color: black;
+      padding: 15px;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    button:hover {
+      transform: scale(1.05);
+      background: #16a34a;
+    }
+    #relatorio {
+      margin-top: 25px;
+      font-weight: bold;
+      font-size: 1rem;
+      text-align: left;
+      line-height: 1.5rem;
+    }
+    #relatorio .alto { color: #ef4444; }     
+    #relatorio .medio { color: #facc15; }    
+    #relatorio .baixo { color: #22c55e; }    
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Auditoria Verde</h1>
+    <p>Diagnóstico Ambiental Automático</p>
+
+    <input type="text" id="empresa" placeholder="Nome da empresa">
+    <input type="email" id="email" placeholder="E-mail válido">
+    <select id="atividade">
+      <option value="">Tipo de atividade</option>
+      <option value="restaurante">Restaurante</option>
+      <option value="escritorio">Escritório</option>
+      <option value="loja">Loja</option>
+    </select>
+    <input type="number" id="energia" placeholder="Consumo de energia (kWh)">
+    <input type="number" id="agua" placeholder="Consumo de água (litros)">
+    <input type="number" id="residuos" placeholder="Resíduos gerados (kg)">
+    <button onclick="gerarRelatorio()">Gerar Diagnóstico</button>
+
+    <div id="relatorio"></div>
+  </div>
+
+  <script>
+    function gerarRelatorio() {
+      let empresa = document.getElementById("empresa").value;
+      let email = document.getElementById("email").value;
+      let atividade = document.getElementById("atividade").value;
+      let energia = parseFloat(document.getElementById("energia").value);
+      let agua = parseFloat(document.getElementById("agua").value);
+      let residuos = parseFloat(document.getElementById("residuos").value);
+
+      // Verificação de campos obrigatórios
+      if (!empresa || !email || !atividade || isNaN(energia) || isNaN(agua) || isNaN(residuos)) {
+        alert("Preencha todos os campos corretamente!");
+        return;
+      }
+
+      // Validação simples de email
+      let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("Por favor, insira um e-mail válido!");
+        return;
+      }
+
+      let pontuacao = 100;
+      if (energia > 300) pontuacao -= 30;
+      if (agua > 500) pontuacao -= 30;
+      if (residuos > 50) pontuacao -= 40;
+
+      let resultado = "";
+      let dicas = "";
+      let classe = "";
+
+      if (pontuacao >= 80) {
+        resultado = "Excelente nível de sustentabilidade! 🌿";
+        classe = "baixo";
+        dicas = `<ul>
+                  <li>Mantenha os hábitos atuais de economia de energia e água.</li>
+                  <li>Continue separando corretamente os resíduos para reciclagem.</li>
+                  <li>Compartilhe boas práticas com colaboradores e clientes.</li>
+                 </ul>`;
+      } else if (pontuacao >= 50) {
+        resultado = "Nível médio. Pode melhorar ♻️";
+        classe = "medio";
+        dicas = `<ul>
+                  <li>Reduza o consumo de energia desligando equipamentos quando não usados.</li>
+                  <li>Economize água revisando torneiras e encanamentos.</li>
+                  <li>Separe resíduos e tente reduzir o uso de descartáveis.</li>
+                 </ul>`;
+      } else {
+        resultado = "Alto impacto ambiental. Precisa melhorar 🚨";
+        classe = "alto";
+        dicas = `<ul>
+                  <li>Revise o consumo de energia e busque fontes mais eficientes.</li>
+                  <li>Implemente medidas de economia de água imediatamente.</li>
+                  <li>Reduza drasticamente a geração de resíduos e pratique reciclagem.</li>
+                  <li>Eduque a equipe sobre sustentabilidade e impacto ambiental.</li>
+                 </ul>`;
+      }
+
+      document.getElementById("relatorio").innerHTML =
+        `<p><strong>${empresa} (${atividade})</strong></p>
+         <p><strong>E-mail:</strong> ${email}</p>
+         <p class="${classe}">Pontuação: ${pontuacao}</p>
+         <p class="${classe}">${resultado}</p>
+         ${dicas}`;
+    }
+  </script>
+</body>
+</html>
