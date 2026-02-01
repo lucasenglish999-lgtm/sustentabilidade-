@@ -3,25 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auditoria Verde - Nível Empresarial</title>
+  <title>Auditoria Verde - Pagamento Antecipado</title>
   <style>
-    /* Fundo branco mármore */
     body {
       margin: 0;
       font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
-      background: #fdfaf6;
-      background-image: url('https://i.ibb.co/GRvZ2Vq/marble.jpg'); /* Textura mármore branca */
-      background-size: cover;
+      background: linear-gradient(-45deg, #0f172a, #1e3a8a, #22c55e, #38bdf8);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      color: white;
+    }
+
+    @keyframes gradientBG {
+      0% {background-position:0% 50%;}
+      50% {background-position:100% 50%;}
+      100% {background-position:0% 50%;}
     }
 
     .container {
-      background: rgba(255, 255, 255, 0.95);
-      border: 2px solid #d4af37; /* dourado */
-      border-radius: 25px;
+      background: rgba(30, 41, 59, 0.95);
+      border-radius: 20px;
       padding: 40px;
       max-width: 600px;
       width: 90%;
@@ -30,16 +35,16 @@
     }
 
     h1 {
-      color: #d4af37; /* dourado */
+      color: #22c55e;
       font-size: 2.5rem;
       margin-bottom: 10px;
       font-weight: bold;
-      text-shadow: 1px 1px 2px #aaa;
+      text-shadow: 2px 2px 4px #000;
     }
 
     p.subtitle {
       font-size: 1.1rem;
-      color: #555;
+      color: #cbd5e1;
       margin-bottom: 25px;
     }
 
@@ -48,13 +53,13 @@
       padding: 15px;
       margin: 10px 0;
       border-radius: 12px;
-      border: 1px solid #d4af37;
+      border: none;
       font-size: 1rem;
     }
 
     button {
-      background: #d4af37;
-      color: white;
+      background: #22c55e;
+      color: black;
       font-weight: bold;
       font-size: 1.1rem;
       border: none;
@@ -68,7 +73,7 @@
     }
 
     button:hover {
-      background: #b5942f;
+      background: #16a34a;
       transform: scale(1.03);
     }
 
@@ -79,20 +84,21 @@
       font-weight: bold;
     }
 
-    #relatorio .alto { color: #ef4444; }     /* vermelho */
-    #relatorio .medio { color: #facc15; }    /* amarelo */
-    #relatorio .baixo { color: #22c55e; }    /* verde */
+    #relatorio .alto { color: #ef4444; }
+    #relatorio .medio { color: #facc15; }
+    #relatorio .baixo { color: #22c55e; }
 
-    /* Seção de pagamento */
-    .pagamento {
-      margin-top: 30px;
-      text-align: left;
-      border-top: 2px solid #d4af37;
-      padding-top: 20px;
+    .hidden {
+      display: none;
     }
 
-    .pagamento h2 {
-      color: #d4af37;
+    .pagamento, .diagnostico {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .pagamento h2, .diagnostico h2 {
+      color: #22c55e;
       margin-bottom: 15px;
       font-size: 1.5rem;
     }
@@ -107,36 +113,18 @@
       width: 100%;
       padding: 10px;
       border-radius: 8px;
-      border: 1px solid #d4af37;
+      border: none;
       margin-bottom: 10px;
     }
-
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Auditoria Verde</h1>
-    <p class="subtitle">Diagnóstico Ambiental Automático - Nível Empresarial</p>
-
-    <input type="text" id="empresa" placeholder="Nome da empresa">
-    <input type="email" id="email" placeholder="E-mail válido">
-    <select id="atividade">
-      <option value="">Tipo de atividade</option>
-      <option value="restaurante">Restaurante</option>
-      <option value="escritorio">Escritório</option>
-      <option value="loja">Loja</option>
-    </select>
-    <input type="number" id="energia" placeholder="Consumo de energia (kWh)">
-    <input type="number" id="agua" placeholder="Consumo de água (litros)">
-    <input type="number" id="residuos" placeholder="Resíduos gerados (kg)">
-    <button onclick="gerarRelatorio()">Gerar Diagnóstico</button>
-
-    <div id="relatorio"></div>
+    <p class="subtitle">Pagamento Antecipado - R$0,01</p>
 
     <!-- Seção de pagamento -->
-    <div class="pagamento">
-      <h2>Pagamento</h2>
-      <p>Escolha o método de pagamento:</p>
+    <div class="pagamento" id="pagamentoSecao">
       <label><input type="radio" name="pagamento" value="cartao" checked> Cartão de Crédito</label>
       <label><input type="radio" name="pagamento" value="pix"> Pix</label>
 
@@ -149,12 +137,54 @@
         <input type="text" id="validade" placeholder="MM/AA">
         <label for="cvv">CVV:</label>
         <input type="number" id="cvv" placeholder="123">
-        <button onclick="simularPagamento()">Pagar Agora</button>
+        <button onclick="pagarAntes()">Pagar R$0,01 e Continuar</button>
       </div>
     </div>
+
+    <!-- Seção de diagnóstico (escondida até pagamento) -->
+    <div class="diagnostico hidden" id="diagnosticoSecao">
+      <h2>Diagnóstico Ambiental</h2>
+      <input type="text" id="empresa" placeholder="Nome da empresa">
+      <input type="email" id="email" placeholder="E-mail válido">
+      <select id="atividade">
+        <option value="">Tipo de atividade</option>
+        <option value="restaurante">Restaurante</option>
+        <option value="escritorio">Escritório</option>
+        <option value="loja">Loja</option>
+      </select>
+      <input type="number" id="energia" placeholder="Consumo de energia (kWh)">
+      <input type="number" id="agua" placeholder="Consumo de água (litros)">
+      <input type="number" id="residuos" placeholder="Resíduos gerados (kg)">
+      <button onclick="gerarRelatorio()">Gerar Diagnóstico</button>
+      <div id="relatorio"></div>
+    </div>
+
   </div>
 
   <script>
+    function pagarAntes() {
+      let metodo = document.querySelector('input[name="pagamento"]:checked').value;
+
+      if (metodo === "cartao") {
+        let numero = document.getElementById("numeroCartao").value;
+        let nome = document.getElementById("nomeCartao").value;
+        let validade = document.getElementById("validade").value;
+        let cvv = document.getElementById("cvv").value;
+
+        if (!numero || !nome || !validade || !cvv) {
+          alert("Preencha todos os dados do cartão!");
+          return;
+        }
+        alert("Pagamento de R$0,01 via cartão simulado aprovado! ✅");
+      } else {
+        alert("Pagamento de R$0,01 via Pix simulado aprovado! ✅");
+      }
+
+      // Esconder pagamento e mostrar diagnóstico
+      document.getElementById("pagamentoSecao").classList.add("hidden");
+      document.getElementById("diagnosticoSecao").classList.remove("hidden");
+    }
+
     function gerarRelatorio() {
       let empresa = document.getElementById("empresa").value;
       let email = document.getElementById("email").value;
@@ -216,24 +246,6 @@
          <p class="${classe}">Pontuação: ${pontuacao}</p>
          <p class="${classe}">${resultado}</p>
          ${dicas}`;
-    }
-
-    function simularPagamento() {
-      let metodo = document.querySelector('input[name="pagamento"]:checked').value;
-      if (metodo === "cartao") {
-        let numero = document.getElementById("numeroCartao").value;
-        let nome = document.getElementById("nomeCartao").value;
-        let validade = document.getElementById("validade").value;
-        let cvv = document.getElementById("cvv").value;
-
-        if (!numero || !nome || !validade || !cvv) {
-          alert("Preencha todos os dados do cartão!");
-          return;
-        }
-        alert("Pagamento via cartão simulado com sucesso! ✅");
-      } else {
-        alert("Pagamento via Pix simulado com sucesso! ✅");
-      }
     }
   </script>
 </body>
