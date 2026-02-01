@@ -3,86 +3,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auditoria Verde</title>
+  <title>Auditoria Verde - Nível Empresarial</title>
   <style>
+    /* Fundo branco mármore */
     body {
       margin: 0;
       font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
-      background: linear-gradient(-45deg, #0f172a, #1e3a8a, #22c55e, #38bdf8);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      background: #fdfaf6;
+      background-image: url('https://i.ibb.co/GRvZ2Vq/marble.jpg'); /* Textura mármore branca */
+      background-size: cover;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
-    @keyframes gradientBG {
-      0% {background-position:0% 50%;}
-      50% {background-position:100% 50%;}
-      100% {background-position:0% 50%;}
-    }
-    .box {
-      background: rgba(30, 41, 59, 0.95);
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid #d4af37; /* dourado */
+      border-radius: 25px;
       padding: 40px;
-      border-radius: 20px;
-      text-align: center;
+      max-width: 600px;
       width: 90%;
-      max-width: 500px;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-      border: 2px solid #22c55e;
-      color: white;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+      text-align: center;
     }
+
     h1 {
-      color: #22c55e;
-      margin-bottom: 15px;
-      font-size: 2rem;
-      text-shadow: 2px 2px 4px #000000;
+      color: #d4af37; /* dourado */
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #aaa;
     }
-    p {
-      font-size: 1rem;
-      margin-bottom: 20px;
+
+    p.subtitle {
+      font-size: 1.1rem;
+      color: #555;
+      margin-bottom: 25px;
     }
+
     input, select {
       width: 100%;
       padding: 15px;
       margin: 10px 0;
-      border: none;
-      border-radius: 10px;
+      border-radius: 12px;
+      border: 1px solid #d4af37;
       font-size: 1rem;
     }
+
     button {
-      background: #22c55e;
-      color: black;
-      padding: 15px;
-      width: 100%;
-      border: none;
-      border-radius: 10px;
+      background: #d4af37;
+      color: white;
       font-weight: bold;
       font-size: 1.1rem;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      width: 100%;
+      margin-top: 15px;
       cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
+
     button:hover {
-      transform: scale(1.05);
-      background: #16a34a;
+      background: #b5942f;
+      transform: scale(1.03);
     }
+
     #relatorio {
       margin-top: 25px;
-      font-weight: bold;
-      font-size: 1rem;
       text-align: left;
       line-height: 1.5rem;
+      font-weight: bold;
     }
-    #relatorio .alto { color: #ef4444; }     
-    #relatorio .medio { color: #facc15; }    
-    #relatorio .baixo { color: #22c55e; }    
+
+    #relatorio .alto { color: #ef4444; }     /* vermelho */
+    #relatorio .medio { color: #facc15; }    /* amarelo */
+    #relatorio .baixo { color: #22c55e; }    /* verde */
+
+    /* Seção de pagamento */
+    .pagamento {
+      margin-top: 30px;
+      text-align: left;
+      border-top: 2px solid #d4af37;
+      padding-top: 20px;
+    }
+
+    .pagamento h2 {
+      color: #d4af37;
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+    }
+
+    .pagamento label {
+      font-weight: bold;
+      display: block;
+      margin: 8px 0 4px;
+    }
+
+    .pagamento input[type="text"], .pagamento input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #d4af37;
+      margin-bottom: 10px;
+    }
+
   </style>
 </head>
 <body>
-  <div class="box">
+  <div class="container">
     <h1>Auditoria Verde</h1>
-    <p>Diagnóstico Ambiental Automático</p>
+    <p class="subtitle">Diagnóstico Ambiental Automático - Nível Empresarial</p>
 
     <input type="text" id="empresa" placeholder="Nome da empresa">
     <input type="email" id="email" placeholder="E-mail válido">
@@ -98,6 +132,26 @@
     <button onclick="gerarRelatorio()">Gerar Diagnóstico</button>
 
     <div id="relatorio"></div>
+
+    <!-- Seção de pagamento -->
+    <div class="pagamento">
+      <h2>Pagamento</h2>
+      <p>Escolha o método de pagamento:</p>
+      <label><input type="radio" name="pagamento" value="cartao" checked> Cartão de Crédito</label>
+      <label><input type="radio" name="pagamento" value="pix"> Pix</label>
+
+      <div id="dadosPagamento">
+        <label for="numeroCartao">Número do cartão:</label>
+        <input type="text" id="numeroCartao" placeholder="0000 0000 0000 0000">
+        <label for="nomeCartao">Nome no cartão:</label>
+        <input type="text" id="nomeCartao" placeholder="Nome completo">
+        <label for="validade">Validade:</label>
+        <input type="text" id="validade" placeholder="MM/AA">
+        <label for="cvv">CVV:</label>
+        <input type="number" id="cvv" placeholder="123">
+        <button onclick="simularPagamento()">Pagar Agora</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -109,13 +163,11 @@
       let agua = parseFloat(document.getElementById("agua").value);
       let residuos = parseFloat(document.getElementById("residuos").value);
 
-      // Verificação de campos obrigatórios
       if (!empresa || !email || !atividade || isNaN(energia) || isNaN(agua) || isNaN(residuos)) {
         alert("Preencha todos os campos corretamente!");
         return;
       }
 
-      // Validação simples de email
       let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         alert("Por favor, insira um e-mail válido!");
@@ -135,26 +187,26 @@
         resultado = "Excelente nível de sustentabilidade! 🌿";
         classe = "baixo";
         dicas = `<ul>
-                  <li>Mantenha os hábitos atuais de economia de energia e água.</li>
-                  <li>Continue separando corretamente os resíduos para reciclagem.</li>
-                  <li>Compartilhe boas práticas com colaboradores e clientes.</li>
+                  <li>Mantenha hábitos de economia de energia e água.</li>
+                  <li>Continue separando resíduos para reciclagem.</li>
+                  <li>Compartilhe boas práticas com sua equipe.</li>
                  </ul>`;
       } else if (pontuacao >= 50) {
         resultado = "Nível médio. Pode melhorar ♻️";
         classe = "medio";
         dicas = `<ul>
-                  <li>Reduza o consumo de energia desligando equipamentos quando não usados.</li>
-                  <li>Economize água revisando torneiras e encanamentos.</li>
-                  <li>Separe resíduos e tente reduzir o uso de descartáveis.</li>
+                  <li>Reduza o consumo de energia desligando equipamentos.</li>
+                  <li>Economize água revisando torneiras.</li>
+                  <li>Separe resíduos e reduza descartáveis.</li>
                  </ul>`;
       } else {
         resultado = "Alto impacto ambiental. Precisa melhorar 🚨";
         classe = "alto";
         dicas = `<ul>
-                  <li>Revise o consumo de energia e busque fontes mais eficientes.</li>
-                  <li>Implemente medidas de economia de água imediatamente.</li>
-                  <li>Reduza drasticamente a geração de resíduos e pratique reciclagem.</li>
-                  <li>Eduque a equipe sobre sustentabilidade e impacto ambiental.</li>
+                  <li>Revise o consumo de energia e busque eficiência.</li>
+                  <li>Implemente economia de água imediatamente.</li>
+                  <li>Reduza resíduos e pratique reciclagem.</li>
+                  <li>Eduque sua equipe sobre sustentabilidade.</li>
                  </ul>`;
       }
 
@@ -164,6 +216,24 @@
          <p class="${classe}">Pontuação: ${pontuacao}</p>
          <p class="${classe}">${resultado}</p>
          ${dicas}`;
+    }
+
+    function simularPagamento() {
+      let metodo = document.querySelector('input[name="pagamento"]:checked').value;
+      if (metodo === "cartao") {
+        let numero = document.getElementById("numeroCartao").value;
+        let nome = document.getElementById("nomeCartao").value;
+        let validade = document.getElementById("validade").value;
+        let cvv = document.getElementById("cvv").value;
+
+        if (!numero || !nome || !validade || !cvv) {
+          alert("Preencha todos os dados do cartão!");
+          return;
+        }
+        alert("Pagamento via cartão simulado com sucesso! ✅");
+      } else {
+        alert("Pagamento via Pix simulado com sucesso! ✅");
+      }
     }
   </script>
 </body>
