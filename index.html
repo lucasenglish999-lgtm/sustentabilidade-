@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auditoria Verde - Pagamento Antecipado</title>
+  <title>Auditoria Verde Empresarial</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       margin: 0;
@@ -17,46 +18,23 @@
       min-height: 100vh;
       color: white;
     }
-
     @keyframes gradientBG {
       0% {background-position:0% 50%;}
       50% {background-position:100% 50%;}
       100% {background-position:0% 50%;}
     }
-
     .container {
       background: rgba(30, 41, 59, 0.95);
       border-radius: 20px;
       padding: 40px;
-      max-width: 600px;
-      width: 90%;
+      max-width: 700px;
+      width: 95%;
       box-shadow: 0 15px 30px rgba(0,0,0,0.3);
       text-align: center;
     }
-
-    h1 {
-      color: #22c55e;
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      font-weight: bold;
-      text-shadow: 2px 2px 4px #000;
-    }
-
-    p.subtitle {
-      font-size: 1.1rem;
-      color: #cbd5e1;
-      margin-bottom: 25px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 12px;
-      border: none;
-      font-size: 1rem;
-    }
-
+    h1 { color: #22c55e; font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px #000; }
+    p.subtitle { font-size: 1.1rem; color: #cbd5e1; margin-bottom: 25px; }
+    input, select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: none; font-size: 1rem; }
     button {
       background: #22c55e;
       color: black;
@@ -71,63 +49,28 @@
       transition: all 0.3s ease;
       box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
-
-    button:hover {
-      background: #16a34a;
-      transform: scale(1.03);
-    }
-
-    #relatorio {
-      margin-top: 25px;
-      text-align: left;
-      line-height: 1.5rem;
-      font-weight: bold;
-    }
-
+    button:hover { background: #16a34a; transform: scale(1.03); }
+    .hidden { display: none; }
+    #relatorio { margin-top: 25px; text-align: left; line-height: 1.5rem; font-weight: bold; }
     #relatorio .alto { color: #ef4444; }
     #relatorio .medio { color: #facc15; }
     #relatorio .baixo { color: #22c55e; }
-
-    .hidden {
-      display: none;
-    }
-
-    .pagamento, .diagnostico {
-      margin-top: 20px;
-      text-align: left;
-    }
-
-    .pagamento h2, .diagnostico h2 {
-      color: #22c55e;
-      margin-bottom: 15px;
-      font-size: 1.5rem;
-    }
-
-    .pagamento label {
-      font-weight: bold;
-      display: block;
-      margin: 8px 0 4px;
-    }
-
-    .pagamento input[type="text"], .pagamento input[type="number"] {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      margin-bottom: 10px;
-    }
+    .pagamento, .diagnostico, .dashboard { margin-top: 20px; text-align: left; }
+    .pagamento h2, .diagnostico h2, .dashboard h2 { color: #22c55e; margin-bottom: 15px; font-size: 1.5rem; }
+    .pagamento label { font-weight: bold; display: block; margin: 8px 0 4px; }
+    .pagamento input[type="text"], .pagamento input[type="number"] { width: 100%; padding: 10px; border-radius: 8px; border: none; margin-bottom: 10px; }
+    canvas { background: #0f172a; border-radius: 12px; margin-top: 20px; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Auditoria Verde</h1>
-    <p class="subtitle">Pagamento Antecipado - R$0,01</p>
+    <h1>Auditoria Verde Empresarial</h1>
+    <p class="subtitle">Pagamento antecipado de R$0,01 para gerar diagnóstico</p>
 
-    <!-- Seção de pagamento -->
+    <!-- Pagamento -->
     <div class="pagamento" id="pagamentoSecao">
       <label><input type="radio" name="pagamento" value="cartao" checked> Cartão de Crédito</label>
       <label><input type="radio" name="pagamento" value="pix"> Pix</label>
-
       <div id="dadosPagamento">
         <label for="numeroCartao">Número do cartão:</label>
         <input type="text" id="numeroCartao" placeholder="0000 0000 0000 0000">
@@ -141,9 +84,9 @@
       </div>
     </div>
 
-    <!-- Seção de diagnóstico (escondida até pagamento) -->
+    <!-- Diagnóstico -->
     <div class="diagnostico hidden" id="diagnosticoSecao">
-      <h2>Diagnóstico Ambiental</h2>
+      <h2>Formulário de Diagnóstico</h2>
       <input type="text" id="empresa" placeholder="Nome da empresa">
       <input type="email" id="email" placeholder="E-mail válido">
       <select id="atividade">
@@ -159,28 +102,29 @@
       <div id="relatorio"></div>
     </div>
 
+    <!-- Dashboard -->
+    <div class="dashboard hidden" id="dashboardSecao">
+      <h2>Dashboard de Sustentabilidade</h2>
+      <canvas id="chartIndicadores" width="600" height="300"></canvas>
+    </div>
+
   </div>
 
   <script>
+    let chart; // gráfico global
+
     function pagarAntes() {
       let metodo = document.querySelector('input[name="pagamento"]:checked').value;
-
       if (metodo === "cartao") {
         let numero = document.getElementById("numeroCartao").value;
         let nome = document.getElementById("nomeCartao").value;
         let validade = document.getElementById("validade").value;
         let cvv = document.getElementById("cvv").value;
-
-        if (!numero || !nome || !validade || !cvv) {
-          alert("Preencha todos os dados do cartão!");
-          return;
-        }
+        if (!numero || !nome || !validade || !cvv) { alert("Preencha todos os dados do cartão!"); return; }
         alert("Pagamento de R$0,01 via cartão simulado aprovado! ✅");
       } else {
         alert("Pagamento de R$0,01 via Pix simulado aprovado! ✅");
       }
-
-      // Esconder pagamento e mostrar diagnóstico
       document.getElementById("pagamentoSecao").classList.add("hidden");
       document.getElementById("diagnosticoSecao").classList.remove("hidden");
     }
@@ -199,10 +143,7 @@
       }
 
       let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        alert("Por favor, insira um e-mail válido!");
-        return;
-      }
+      if (!emailRegex.test(email)) { alert("Por favor, insira um e-mail válido!"); return; }
 
       let pontuacao = 100;
       if (energia > 300) pontuacao -= 30;
@@ -214,24 +155,21 @@
       let classe = "";
 
       if (pontuacao >= 80) {
-        resultado = "Excelente nível de sustentabilidade! 🌿";
-        classe = "baixo";
+        resultado = "Excelente nível de sustentabilidade! 🌿"; classe = "baixo";
         dicas = `<ul>
                   <li>Mantenha hábitos de economia de energia e água.</li>
                   <li>Continue separando resíduos para reciclagem.</li>
                   <li>Compartilhe boas práticas com sua equipe.</li>
                  </ul>`;
       } else if (pontuacao >= 50) {
-        resultado = "Nível médio. Pode melhorar ♻️";
-        classe = "medio";
+        resultado = "Nível médio. Pode melhorar ♻️"; classe = "medio";
         dicas = `<ul>
                   <li>Reduza o consumo de energia desligando equipamentos.</li>
                   <li>Economize água revisando torneiras.</li>
                   <li>Separe resíduos e reduza descartáveis.</li>
                  </ul>`;
       } else {
-        resultado = "Alto impacto ambiental. Precisa melhorar 🚨";
-        classe = "alto";
+        resultado = "Alto impacto ambiental. Precisa melhorar 🚨"; classe = "alto";
         dicas = `<ul>
                   <li>Revise o consumo de energia e busque eficiência.</li>
                   <li>Implemente economia de água imediatamente.</li>
@@ -246,6 +184,30 @@
          <p class="${classe}">Pontuação: ${pontuacao}</p>
          <p class="${classe}">${resultado}</p>
          ${dicas}`;
+
+      document.getElementById("dashboardSecao").classList.remove("hidden");
+      atualizarGrafico(energia, agua, residuos);
+    }
+
+    function atualizarGrafico(energia, agua, residuos) {
+      const ctx = document.getElementById('chartIndicadores').getContext('2d');
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Energia (kWh)', 'Água (litros)', 'Resíduos (kg)'],
+          datasets: [{
+            label: 'Consumo',
+            data: [energia, agua, residuos],
+            backgroundColor: [ '#22c55e', '#facc15', '#ef4444' ]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
     }
   </script>
 </body>
